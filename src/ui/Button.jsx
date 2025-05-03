@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 Button.propTypes = {
   disabled: PropTypes.bool,
   to: PropTypes.string,
-  type: PropTypes.oneOf(['primary', 'secondary', 'small']),
+  type: PropTypes.oneOf(['primary', 'secondary', 'small', 'round']),
   onClick: PropTypes.func,
   children: PropTypes.node
 }
