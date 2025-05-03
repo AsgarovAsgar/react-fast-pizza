@@ -30,9 +30,11 @@ function CreateOrder() {
 
   const totalPrice = totalCartPrice + priorityPrice
 
-  const username = useSelector((state) => state.user.username)
+  const { username, position, address, status: addressStatus, error: addressError } = useSelector((state) => state.user)
+  const isLoadingAddress = addressStatus === 'loading'
 
-  const handleFetchAddress = () => {
+  const handleFetchAddress = (e) => {
+    e.preventDefault()
     console.log('fetching address')
 
     dispatch(fetchAddress())
@@ -43,7 +45,6 @@ function CreateOrder() {
   return (
     <div className="px-4 py-6">
       <h2 className="mb-8 text-xl font-semibold">Ready to order? Let's go!</h2>
-      <button onClick={handleFetchAddress}>get pposition</button>
       <Form method="post">
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">First Name</label>
@@ -64,11 +65,30 @@ function CreateOrder() {
           </div>
         </div>
 
-        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="relative mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">Address</label>
           <div className="grow">
-            <input className="input" type="text" name="address" required />
+            <input
+              className="input"
+              type="text"
+              name="address"
+              defaultValue={address}
+              disabled={isLoadingAddress}
+              required
+            />
+            {addressStatus === 'error' && (
+              <p className="mt-2 rounded-md bg-red-100 p-2 text-xs text-red-700" style={{ color: 'red' }}>
+                {addressError}
+              </p>
+            )}
           </div>
+          {!position.latitude && !position.longitude && (
+            <span className="absolute right-[3px] top-[35px] z-10 sm:top-[3px] md:right-[5px] md:top-[5px]">
+              <Button type="small" disabled={isLoadingAddress} onClick={(e) => handleFetchAddress(e)}>
+                get pposition
+              </Button>
+            </span>
+          )}
         </div>
 
         <div className="mb-12 flex items-center gap-5">
@@ -87,7 +107,12 @@ function CreateOrder() {
 
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <Button type="primary" disabled={isSubmitting}>
+          <input
+            type="hidden"
+            name="position"
+            value={position.latitude && position.longitude ? `${position.latitude},${position.longitude}` : ''}
+          />
+          <Button type="primary" disabled={isSubmitting || isLoadingAddress} className="w-full">
             {isSubmitting ? 'Creating order...' : `Order now for ${formatCurrency(totalPrice)}`}
           </Button>
         </div>
@@ -105,6 +130,8 @@ export async function action({ request }) {
     cart: JSON.parse(data.cart),
     priority: data.priority === 'true'
   }
+
+  console.log('order', order)
 
   const errors = {}
   if (!isValidPhone(order.phone)) {
