@@ -7,9 +7,7 @@ function MenuItem({ pizza }) {
   const dispatch = useDispatch()
   const { id, name, unitPrice, ingredients, soldOut, imageUrl } = pizza
 
-  const handleAddToCart = () => {
-    // dispatch(addItem({ pizzaId: id, name, unitPrice, quantity: 1, totalPrice: unitPrice }))
-    console.log('Add to cart', id)
+  function handleAddToCart() {
     const newItem = {
       pizzaId: id,
       name,
