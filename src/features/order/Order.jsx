@@ -5,6 +5,7 @@ import { getOrder } from '../../services/apiRestaurant'
 import { calcMinutesLeft, formatCurrency, formatDate } from '../../utils/helpers'
 import OrderItem from './OrderItem'
 import { useEffect } from 'react'
+import UpdateOrder from './UpdateOrder'
 
 export default function Order() {
   const order = useLoaderData()
@@ -16,8 +17,6 @@ export default function Order() {
       fetcher.load(`/menu`)
     }
   }, [fetcher])
-
-  console.log('data', fetcher.data)
 
   // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
   const { id, status, priority, priorityPrice, orderPrice, estimatedDelivery, cart } = order
@@ -67,6 +66,8 @@ export default function Order() {
           To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}
         </p>
       </div>
+
+      {!priority && <UpdateOrder order={order} />}
     </div>
   )
 }
