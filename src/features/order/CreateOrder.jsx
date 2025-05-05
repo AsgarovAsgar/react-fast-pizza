@@ -35,8 +35,6 @@ function CreateOrder() {
 
   const handleFetchAddress = (e) => {
     e.preventDefault()
-    console.log('fetching address')
-
     dispatch(fetchAddress())
   }
 
@@ -44,7 +42,7 @@ function CreateOrder() {
 
   return (
     <div className="px-4 py-6">
-      <h2 className="mb-8 text-xl font-semibold">Ready to order? Let's go!</h2>
+      <h2 className="mb-8 text-xl font-semibold">Ready to order? Let&apos;s go!</h2>
       <Form method="post">
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">First Name</label>
@@ -85,7 +83,7 @@ function CreateOrder() {
           {!position.latitude && !position.longitude && (
             <span className="absolute right-[3px] top-[35px] z-10 sm:top-[3px] md:right-[5px] md:top-[5px]">
               <Button type="small" disabled={isLoadingAddress} onClick={(e) => handleFetchAddress(e)}>
-                get pposition
+                Get position
               </Button>
             </span>
           )}
@@ -130,8 +128,6 @@ export async function action({ request }) {
     cart: JSON.parse(data.cart),
     priority: data.priority === 'true'
   }
-
-  console.log('order', order)
 
   const errors = {}
   if (!isValidPhone(order.phone)) {
